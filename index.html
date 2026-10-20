@@ -144,15 +144,31 @@
 <script>
   /* ====== CẤU HÌNH: đổi đường dẫn video tại đây (theo thứ tự ô 1 → 8) ====== */
   const VIDEOS = [
-    'videos/1.MP4',
-    'videos/2.MP4',
-    'videos/3.MP4',
-    'videos/4.MP4',
-    'videos/5.MP4',
-    'videos/6.MP4',
-    'videos/7.MP4',
-    'videos/8.MP4',
+    'Video/1.mp4',
+    'Video/2.mp4',
+    'Video/3.mp4',
+    'Video/4.mp4',
+    'Video/5.mp4',
+    'Video/6.mp4',
+    'Video/7.mp4',
+    'Video/8.mp4',
   ];
+
+  // Tự thử các kiểu tên khác nếu không tìm thấy video (Video/videos, .mp4/.MP4)
+  const NAME_STYLES = ['Video/{n}.mp4', 'Video/{n}.MP4', 'videos/{n}.mp4', 'videos/{n}.MP4'];
+  document.getElementById('video').addEventListener('error', e => {
+    const v = e.target;
+    const src = v.getAttribute('src');
+    const m = src && src.match(/(\d+)\.mp4$/i);
+    if (!m) return;
+    const tries = NAME_STYLES.map(s => s.replace('{n}', m[1]));
+    const next = tries[tries.indexOf(src) + 1];
+    if (next) {
+      e.stopImmediatePropagation();
+      v.src = next;
+      v.play().catch(() => {});
+    }
+  });
   const AUTO_CLOSE_WHEN_ENDED = true; // true = video phát xong tự đóng
   /* ======================================================================== */
 
